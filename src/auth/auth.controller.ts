@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
+import { User } from 'src/user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -46,24 +47,30 @@ export class AuthController {
       success: true,
       message: 'register success',
       data: {
-        token: token,
+        id: registerResult.id,
+        email: registerResult.email,
+        name: registerResult.name,
+        avatar: registerResult.avatar,
+        _token: token,
+        _tokenType: 'Bearer',
       },
     });
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(
-    @Body() loginDto: LoginDto,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    const token = await this.authService.login(req.user);
+  async login(@Req() req: Request, @Res() res: Response) {
+    const user = req.user as User;
+    const token = await this.authService.login(user);
     return res.status(200).json({
       success: true,
       message: 'login success',
       data: {
-        token: token,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        _token: token,
+        _tokenType: 'Bearer',
       },
     });
   }
@@ -71,6 +78,10 @@ export class AuthController {
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   async profile(@Req() req: Request, @Res() res: Response) {
-    return res.json(req.user);
+    return res.status(200).json({
+      succes: true,
+      message: 'ok',
+      data: req.user,
+    });
   }
 }

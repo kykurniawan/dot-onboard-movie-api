@@ -36,6 +36,6 @@ export class AuthService {
       password: hashedPassword,
       avatar: registerDto.avatar,
     });
-    return { newUser, token: 'hellotoken' };
+    return newUser;
   }
 }
