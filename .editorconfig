@@ -1,4 +1,5 @@
 [*]
 end_of_line = lf
 tab_width = 2
+[*.ts]
 insert_final_newline = true
