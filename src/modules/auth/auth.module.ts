@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from 'src/modules/user/user.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -16,7 +16,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     MulterModule.register({
       dest: './uploads',
       storage: diskStorage({
-        destination: './uploads',
+        destination: './uploads/avatars',
         filename(req, file, callback) {
           callback(null, Date.now() + extname(file.originalname));
         },

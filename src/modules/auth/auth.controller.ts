@@ -13,8 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response, Request } from 'express';
-import { User } from 'src/user/entities/user.entity';
+import { Response, Request, Express } from 'express';
+import { User } from 'src/modules/user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';

@@ -1,19 +1,19 @@
 import * as dotenv from 'dotenv';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { DatabaseModule } from './database/database.module';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { LoggerMiddleware } from './app.middleware';
 import { WinstonModule } from 'nest-winston';
-import { MovieModule } from './movie/movie.module';
+import { MovieModule } from './modules/movie/movie.module';
 import * as winston from 'winston';
+import { BackofficeModule } from './modules/backoffice/backoffice.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeOrmConfig } from './configs/typeorm.config';
 dotenv.config();
 
 @Module({
   imports: [
-    DatabaseModule,
-    UserModule,
-    AuthModule,
+    TypeOrmModule.forRoot(typeOrmConfig),
     WinstonModule.forRoot({
       transports: [
         new winston.transports.File({
@@ -32,7 +32,10 @@ dotenv.config();
         }),
       ],
     }),
+    UserModule,
+    AuthModule,
     MovieModule,
+    BackofficeModule,
   ],
 })
 export class AppModule implements NestModule {

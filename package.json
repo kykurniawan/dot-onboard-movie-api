@@ -19,9 +19,15 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node ./node_modules/typeorm/cli",
-    "typeorm:run-migration": "npm run typeorm migration:run -- -d ./typeOrm.config.ts",
-    "typeorm:revert-migration": "npm run typeorm -- -d ./typeOrm.config.ts migration:revert"
+    "typeorm:cli": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -d ./src/configs/typeorm.config-migrations.ts",
+    "migration:generate": "npm run typeorm:cli -- migration:generate -d ./src/configs/typeorm.config-migrations.ts -n",
+    "migration:create": "npm run typeorm:cli -- migration:create -d ./src/configs/typeorm.config-migrations.ts -n",
+    "migration:run": "npm run typeorm:cli -- migration:run",
+    "migration:revert": "npm run typeorm:cli -- migration:revert",
+    "migration:show": "npm run typeorm:cli -- migration:show",
+    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config -d ./src/configs/typeorm.config-migrations.ts",
+    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -d ./src/configs/typeorm.config-migrations.ts",
+    "db:refresh": "npm run typeorm:cli schema:drop && npm run migration:run && npm run seed:run"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -44,6 +50,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.7",
+    "webpack": "^5.74.0",
     "winston": "^3.8.1"
   },
   "devDependencies": {
