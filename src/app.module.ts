@@ -11,6 +11,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './configs/typeorm.config';
 dotenv.config();
 
+const winstonFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.align(),
+  winston.format.printf(
+    (info) => `${info.timestamp} ${info.level.toUpperCase()}: ${info.message}`,
+  ),
+);
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
@@ -18,17 +26,10 @@ dotenv.config();
       transports: [
         new winston.transports.File({
           filename: 'app.log',
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.simple(),
-          ),
+          format: winstonFormat,
         }),
         new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.timestamp(),
-            winston.format.simple(),
-          ),
+          format: winstonFormat,
         }),
       ],
     }),
