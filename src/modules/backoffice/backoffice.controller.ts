@@ -121,15 +121,13 @@ export class BackofficeController {
   }
 
   @Get('tags')
-  async tagList(@Res() res: Response) {
-    const tags = await this.movieService.findAllTag();
+  async tagList(@Req() req: Request, @Res() res: Response) {
+    const results = await this.movieService.findAllTag(req.query);
 
     return res.status(200).json({
       success: true,
       message: 'ok',
-      data: {
-        items: tags,
-      },
+      data: results,
     });
   }
 }

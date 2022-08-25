@@ -8,7 +8,7 @@ import { Movie } from './entities/movie.entity';
 import { Tag } from './entities/tag.entity';
 
 export class PaginateResult {
-  items: Array<Movie>;
+  items: Array<Movie | Tag>;
   pagination: {
     page: number;
     per_page: number;
@@ -69,27 +69,27 @@ export class MovieService {
     return updatedMovie;
   }
 
-  async findAllMovie(params?: any): Promise<PaginateResult> {
-    const { keyword, date, page, per_page } = params;
+  async findAllMovie(query?: any): Promise<PaginateResult> {
+    const { keyword, date, page, per_page } = query;
 
-    const query = await this.movieRepository.createQueryBuilder('movie');
+    const queryBuilder = await this.movieRepository.createQueryBuilder('movie');
 
     if (keyword) {
-      await query.where('movie.title LIKE :title', {
+      await queryBuilder.where('movie.title LIKE :title', {
         title: '%' + keyword + '%',
       });
-      await query.orWhere('movie.overview LIKE :overview', {
+      await queryBuilder.orWhere('movie.overview LIKE :overview', {
         overview: '%' + keyword + '%',
       });
     }
 
     if (date) {
-      await query.where('movie.created_at LIKE :created_at', {
+      await queryBuilder.where('movie.created_at LIKE :created_at', {
         created_at: '%' + date + '%',
       });
     }
 
-    await query.leftJoinAndSelect('movie.tags', 'tags');
+    await queryBuilder.leftJoinAndSelect('movie.tags', 'tags');
 
     let paginatePage = 1;
     if (page) {
@@ -100,7 +100,7 @@ export class MovieService {
       paginateLimit = Number(per_page);
     }
     const offset = (paginatePage - 1) * paginateLimit;
-    const result = await query
+    const result = await queryBuilder
       .limit(paginateLimit)
       .offset(offset)
       .getManyAndCount();
@@ -112,15 +112,13 @@ export class MovieService {
     let next: string = null;
     if (paginatePage !== 1) {
       const prv = paginatePage - 1;
-      console.log(prv);
-      delete params.page;
-      previous = '?' + new URLSearchParams({ page: prv, ...params }).toString();
+      delete query.page;
+      previous = '?' + new URLSearchParams({ page: prv, ...query }).toString();
     }
     if (paginatePage !== totalPages) {
       const nxt = paginatePage + 1;
-      console.log(nxt);
-      delete params.page;
-      next = '?' + new URLSearchParams({ page: nxt, ...params }).toString();
+      delete query.page;
+      next = '?' + new URLSearchParams({ page: nxt, ...query }).toString();
     }
 
     return {
@@ -144,8 +142,49 @@ export class MovieService {
     return await this.tagRepository.save({ name });
   }
 
-  async findAllTag(): Promise<Tag[]> {
-    return await this.tagRepository.find({});
+  async findAllTag(query?: any): Promise<PaginateResult> {
+    const { page, per_page } = query;
+    let paginatePage = 1;
+    if (page) {
+      paginatePage = Number(page);
+    }
+    let paginateLimit = 10;
+    if (per_page) {
+      paginateLimit = Number(per_page);
+    }
+    const offset = (paginatePage - 1) * paginateLimit;
+    const result = await this.tagRepository.findAndCount({
+      take: paginateLimit,
+      skip: offset,
+    });
+
+    const items = result[0];
+    const totalItems = result[1];
+    const totalPages = Math.ceil(result[1] / paginateLimit);
+    let previous: string = null;
+    let next: string = null;
+    if (paginatePage !== 1) {
+      const prv = paginatePage - 1;
+      delete query.page;
+      previous = '?' + new URLSearchParams({ page: prv, ...query }).toString();
+    }
+    if (paginatePage !== totalPages) {
+      const nxt = paginatePage + 1;
+      delete query.page;
+      next = '?' + new URLSearchParams({ page: nxt, ...query }).toString();
+    }
+
+    return {
+      items: items,
+      pagination: {
+        page: paginatePage,
+        per_page: paginateLimit,
+        total_items: totalItems,
+        total_pages: totalPages,
+        previous_link: previous,
+        next_link: next,
+      },
+    };
   }
 
   async findTagById(id: number): Promise<Tag> {
