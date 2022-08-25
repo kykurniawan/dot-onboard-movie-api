@@ -156,6 +156,9 @@ export class MovieService {
     const result = await this.tagRepository.findAndCount({
       take: paginateLimit,
       skip: offset,
+      relations: {
+        movies: true,
+      },
     });
 
     const items = result[0];
