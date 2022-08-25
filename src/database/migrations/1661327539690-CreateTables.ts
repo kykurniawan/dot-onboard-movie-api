@@ -1,62 +1,22 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateTables1661327539690 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const userTable = new Table({
-      name: 'users',
-      columns: [
-        {
-          name: 'id',
-          type: 'int',
-          isPrimary: true,
-          isGenerated: true,
-          isNullable: false,
-        },
-        {
-          name: 'name',
-          type: 'varchar',
-          length: '255',
-          isNullable: false,
-        },
-        {
-          name: 'email',
-          type: 'varchar',
-          length: '255',
-          isNullable: false,
-        },
-        {
-          name: 'password',
-          type: 'varchar',
-          length: '255',
-          isNullable: false,
-        },
-        {
-          name: 'avatar',
-          type: 'varchar',
-          length: '255',
-          isNullable: false,
-        },
-        {
-          name: 'created_at',
-          type: 'timestamp',
-          default: 'now()',
-        },
-        {
-          name: 'updated_at',
-          type: 'timestamp',
-          default: 'now()',
-        },
-        {
-          name: 'deleted_at',
-          type: 'timestamp',
-          isNullable: true,
-        },
-      ],
-    });
-    await queryRunner.createTable(userTable, true);
+    await queryRunner.query(`
+    CREATE TABLE users (
+      id bigint PRIMARY KEY NOT NULL AUTO_INCREMENT,
+      name varchar(255),
+      email varchar(255),
+      password varchar(255),
+      avatar varchar(255),
+      is_admin boolean,
+      created_at datetime,
+      updated_at datetime,
+      deleted_at datetime);
+      `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('users');
+    await queryRunner.dropTable('users', true);
   }
 }

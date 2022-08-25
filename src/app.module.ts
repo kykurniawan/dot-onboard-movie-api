@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { LoggerMiddleware } from './app.middleware';
 import { WinstonModule } from 'nest-winston';
+import { MovieModule } from './movie/movie.module';
 import * as winston from 'winston';
 dotenv.config();
 
@@ -31,6 +32,7 @@ dotenv.config();
         }),
       ],
     }),
+    MovieModule,
   ],
 })
 export class AppModule implements NestModule {
