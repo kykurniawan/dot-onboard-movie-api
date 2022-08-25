@@ -1,5 +1,4 @@
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -25,7 +24,7 @@ export class User {
   @Column({ length: 255 })
   avatar: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   is_admin: boolean;
 
   @CreateDateColumn()

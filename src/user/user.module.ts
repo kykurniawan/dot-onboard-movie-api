@@ -9,4 +9,4 @@ import { UniqueEmailValidator } from './validators/unique-email.validator';
   exports: [UserService],
   providers: [UserService, UniqueEmailValidator],
 })
-export class UsersModule {}
+export class UserModule {}

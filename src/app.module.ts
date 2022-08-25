@@ -1,27 +1,40 @@
 import * as dotenv from 'dotenv';
-import * as process from 'process';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-
+import { DatabaseModule } from './database/database.module';
+import { LoggerMiddleware } from './app.middleware';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 dotenv.config();
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQL_HOST || 'localhost',
-      port: parseInt(process.env.MYSQL_PORT) || 3306,
-      username: process.env.MYSQL_USERNAME || 'root',
-      password: process.env.MYSQL_PASSWORD || 'root',
-      database: process.env.MYSQL_DATABASE || 'app',
-      entities: [User],
-      synchronize: true,
-    }),
-    UsersModule,
+    DatabaseModule,
+    UserModule,
     AuthModule,
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.File({
+          filename: 'app.log',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.simple(),
+          ),
+        }),
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.timestamp(),
+            winston.format.simple(),
+          ),
+        }),
+      ],
+    }),
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
