@@ -3,8 +3,6 @@ import {
   ValidatorConstraintInterface,
   ValidatorConstraint,
   ValidationArguments,
-  registerDecorator,
-  ValidationOptions,
 } from 'class-validator';
 import { UserService } from 'src/user/user.service';
 
