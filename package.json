@@ -27,7 +27,8 @@
     "migration:show": "npm run typeorm:cli -- migration:show",
     "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config -d ./src/configs/typeorm.config-migrations.ts",
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -d ./src/configs/typeorm.config-migrations.ts",
-    "db:refresh": "npm run typeorm:cli schema:drop && npm run migration:run && npm run seed:run"
+    "db:refresh": "npm run typeorm:cli schema:drop && npm run migration:run && npm run seed:run",
+    "seed": "ts-node ./src/configs/typeorm-extension.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -50,6 +51,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.7",
+    "typeorm-extension": "^2.1.9",
     "webpack": "^5.74.0",
     "winston": "^3.8.1"
   },
