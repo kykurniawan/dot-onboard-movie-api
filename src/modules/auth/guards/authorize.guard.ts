@@ -16,7 +16,7 @@ export class AuthorizeGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    console.log(roles);
+    console.log(request.user);
     return true;
   }
 }

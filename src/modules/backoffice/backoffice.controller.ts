@@ -19,12 +19,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response, Express } from 'express';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { MovieService } from 'src/modules/movie/movie.service';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { CreateMovieDto } from '../movie/dto/create-movie.dto';
 import { CreateTagDto } from '../movie/dto/create-tag.dto';
 import { UpdateMovieDto } from '../movie/dto/update-movie.dto';
 
 @Controller('backoffice')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, AdminGuard)
 export class BackofficeController {
   constructor(private readonly movieService: MovieService) {}
 
