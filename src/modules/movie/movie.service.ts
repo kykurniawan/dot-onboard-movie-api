@@ -26,6 +26,10 @@ export class MovieService {
     @InjectRepository(Tag) private tagRepository: Repository<Tag>,
   ) {}
 
+  async insertMovie(movies: Movie[]) {
+    await this.movieRepository.save(movies);
+  }
+
   async createMovie(createMovieDto: CreateMovieDto): Promise<Movie> {
     const { title, overview, play_until, poster, tags } = createMovieDto;
 

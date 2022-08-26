@@ -9,6 +9,8 @@ import * as winston from 'winston';
 import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './configs/typeorm.config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronjobModule } from './cronjob/cronjob.module';
 dotenv.config();
 
 const winstonFormat = winston.format.combine(
@@ -21,6 +23,7 @@ const winstonFormat = winston.format.combine(
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(typeOrmConfig),
     WinstonModule.forRoot({
       transports: [
@@ -37,6 +40,7 @@ const winstonFormat = winston.format.combine(
     AuthModule,
     MovieModule,
     BackofficeModule,
+    CronjobModule,
   ],
 })
 export class AppModule implements NestModule {
