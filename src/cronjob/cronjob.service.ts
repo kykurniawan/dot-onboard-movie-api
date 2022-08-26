@@ -1,6 +1,6 @@
 import * as process from 'process';
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { Movie } from 'src/modules/movie/entities/movie.entity';
 import { MovieService } from 'src/modules/movie/movie.service';
