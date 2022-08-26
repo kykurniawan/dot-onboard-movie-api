@@ -14,9 +14,11 @@ import {
   FileTypeValidator,
   ParseFilePipe,
   NotFoundException,
+  UseFilters,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response, Express } from 'express';
+import { HttpExceptionFilter } from 'src/app.filter';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { MovieService } from 'src/modules/movie/movie.service';
 import { AdminGuard } from '../auth/guards/admin.guard';
@@ -26,6 +28,7 @@ import { UpdateMovieDto } from '../movie/dto/update-movie.dto';
 
 @Controller('backoffice')
 @UseGuards(JwtAuthGuard, AdminGuard)
+@UseFilters(new HttpExceptionFilter())
 export class BackofficeController {
   constructor(private readonly movieService: MovieService) {}
 

@@ -11,9 +11,11 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request, Express } from 'express';
+import { HttpExceptionFilter } from 'src/app.filter';
 import { User } from 'src/modules/user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -21,6 +23,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
+@UseFilters(new HttpExceptionFilter())
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
