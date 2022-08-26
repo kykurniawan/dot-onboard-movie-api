@@ -7,7 +7,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie } from './entities/movie.entity';
 import { Tag } from './entities/tag.entity';
 
-export class PaginateResult {
+export interface PaginateResult {
   items: Array<Movie | Tag>;
   pagination: {
     page: number;
