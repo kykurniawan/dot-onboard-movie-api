@@ -9,7 +9,7 @@ import {
 import { Response, Request } from 'express';
 import { HttpExceptionFilter } from 'src/app.filter';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
-import { MovieService } from './movie.service';
+import { MovieService } from './services/movie.service';
 
 @Controller('movies')
 @UseFilters(new HttpExceptionFilter())

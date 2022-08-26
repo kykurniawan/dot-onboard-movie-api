@@ -4,12 +4,12 @@ import {
   ValidatorConstraint,
   ValidationArguments,
 } from 'class-validator';
-import { MovieService } from '../services/movie.service';
+import { MovieScheduleService } from '../services/movie-schedule.service';
 
-@ValidatorConstraint({ name: 'tagsExists', async: true })
+@ValidatorConstraint({ name: 'studioExists', async: true })
 @Injectable()
-export class TagsExistsValidator implements ValidatorConstraintInterface {
-  constructor(private readonly movieService: MovieService) {}
+export class StudioExistsValidator implements ValidatorConstraintInterface {
+  constructor(private readonly movieScheduleService: MovieScheduleService) {}
 
   async validate(
     value: string,
@@ -19,14 +19,16 @@ export class TagsExistsValidator implements ValidatorConstraintInterface {
     if (!value) {
       return true;
     }
-    const tag = await this.movieService.findTagById(parseInt(value));
-    if (!tag) {
+    const studio = await this.movieScheduleService.findOneStudio(
+      parseInt(value),
+    );
+    if (!studio) {
       return false;
     }
     return true;
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
-    return 'One or more tag items is not exists.';
+    return 'Studio with id: ' + validationArguments.value + ' is not exists.';
   }
 }

@@ -6,9 +6,9 @@ import {
 } from 'class-validator';
 import { MovieService } from '../services/movie.service';
 
-@ValidatorConstraint({ name: 'tagsExists', async: true })
+@ValidatorConstraint({ name: 'movieExists', async: true })
 @Injectable()
-export class TagsExistsValidator implements ValidatorConstraintInterface {
+export class MovieExistsValidator implements ValidatorConstraintInterface {
   constructor(private readonly movieService: MovieService) {}
 
   async validate(
@@ -19,14 +19,14 @@ export class TagsExistsValidator implements ValidatorConstraintInterface {
     if (!value) {
       return true;
     }
-    const tag = await this.movieService.findTagById(parseInt(value));
-    if (!tag) {
+    const movie = await this.movieService.findMovieById(parseInt(value));
+    if (!movie) {
       return false;
     }
     return true;
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
-    return 'One or more tag items is not exists.';
+    return 'Movie with id: ' + validationArguments.value + ' is not exists.';
   }
 }

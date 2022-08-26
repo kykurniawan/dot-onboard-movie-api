@@ -3,39 +3,26 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { MovieSchedule } from './movie-schedule.entity';
-import { Tag } from './tag.entity';
 
-@Entity('movies')
-export class Movie {
+@Entity('studios')
+export class Studio {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ length: 255 })
-  title: string;
+  @Column()
+  studio_number: number;
 
-  @Column({ type: 'text' })
-  overview: string;
-
-  @Column({ length: 255 })
-  poster: string;
-
-  @Column({ type: 'datetime' })
-  play_until: Date;
-
-  @ManyToMany(() => Tag, (tag: Tag) => tag.movies)
-  @JoinTable()
-  tags: Tag[];
+  @Column()
+  seat_capacity: number;
 
   @OneToMany(
     () => MovieSchedule,
-    (movieSchedule: MovieSchedule) => movieSchedule.movie,
+    (movieSchedule: MovieSchedule) => movieSchedule.studio,
   )
   schedules: MovieSchedule[];
 
