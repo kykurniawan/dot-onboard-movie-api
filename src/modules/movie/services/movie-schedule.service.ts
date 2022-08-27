@@ -128,4 +128,14 @@ export class MovieScheduleService {
       },
     };
   }
+
+  async findOneScheduleById(id: number): Promise<MovieSchedule> {
+    return await this.movieScheduleRepository.findOne({
+      where: { id },
+      relations: {
+        movie: true,
+        studio: true,
+      },
+    });
+  }
 }

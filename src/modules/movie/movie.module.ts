@@ -11,6 +11,7 @@ import { MovieExistsValidator } from './validators/movie-exists.validator';
 import { StudioExistsValidator } from './validators/studio-exitst.validator';
 import { UniqueStudioNumberValidator } from './validators/unique-studio-number.validator';
 import { MovieScheduleService } from './services/movie-schedule.service';
+import { ScheduleExistsValidator } from './validators/schedule-exists.validator';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Movie, Tag, MovieSchedule, Studio])],
@@ -22,6 +23,7 @@ import { MovieScheduleService } from './services/movie-schedule.service';
     MovieExistsValidator,
     StudioExistsValidator,
     UniqueStudioNumberValidator,
+    ScheduleExistsValidator,
   ],
   controllers: [MovieController],
 })

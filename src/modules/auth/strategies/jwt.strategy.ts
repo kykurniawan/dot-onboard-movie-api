@@ -3,6 +3,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { jwtConstants } from '../constants';
 
+export interface JWTUser {
+  user_id: number;
+  email: string;
+  is_admin: boolean;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
@@ -18,6 +24,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       user_id: payload.sub,
       email: payload.email,
       is_admin: payload.is_admin,
-    };
+    } as JWTUser;
   }
 }

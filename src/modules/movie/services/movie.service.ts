@@ -128,7 +128,12 @@ export class MovieService {
   }
 
   async findMovieById(id: number): Promise<Movie> {
-    return await this.movieRepository.findOneBy({ id });
+    return await this.movieRepository.findOne({
+      where: { id },
+      relations: {
+        schedules: true,
+      },
+    });
   }
 
   async createTag(name: string): Promise<Tag> {

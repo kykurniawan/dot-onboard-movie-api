@@ -34,7 +34,7 @@ export class AuthController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 2000000 }),
-          new FileTypeValidator({ fileType: 'jpeg' }),
+          new FileTypeValidator({ fileType: 'jpeg|png' }),
         ],
       }),
     )

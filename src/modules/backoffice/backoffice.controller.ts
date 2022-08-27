@@ -16,7 +16,6 @@ import {
   NotFoundException,
   UseFilters,
   BadRequestException,
-  ValidationError,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response, Express } from 'express';
