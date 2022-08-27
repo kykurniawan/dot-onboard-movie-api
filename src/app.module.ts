@@ -10,7 +10,8 @@ import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { CronjobModule } from './cronjob/cronjob.module';
+import { CronjobModule } from './modules/cronjob/cronjob.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 dotenv.config();
 
 const winstonFormat = winston.format.combine(
@@ -41,6 +42,7 @@ const winstonFormat = winston.format.combine(
     MovieModule,
     BackofficeModule,
     CronjobModule,
+    TransactionModule,
   ],
 })
 export class AppModule implements NestModule {

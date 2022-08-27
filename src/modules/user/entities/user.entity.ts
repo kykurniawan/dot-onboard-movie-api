@@ -1,8 +1,10 @@
+import { Order } from 'src/modules/transaction/entities/order.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,6 +28,9 @@ export class User {
 
   @Column({ default: true })
   is_admin: boolean;
+
+  @OneToMany(() => Order, (order: Order) => order.user)
+  orders: Order[];
 
   @CreateDateColumn()
   created_at: Date;

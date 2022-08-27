@@ -1,9 +1,11 @@
+import { OrderItem } from 'src/modules/transaction/entities/order-item.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,6 +22,12 @@ export class MovieSchedule {
 
   @ManyToOne(() => Studio, (studio: Studio) => studio.schedules)
   studio: Studio;
+
+  @OneToMany(
+    () => OrderItem,
+    (orderItem: OrderItem) => orderItem.movie_schedule,
+  )
+  order_items: OrderItem[];
 
   @Column()
   start_time: string;
