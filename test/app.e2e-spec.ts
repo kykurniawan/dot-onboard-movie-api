@@ -20,7 +20,6 @@ import { MovieSchedule } from '../src/modules/movie/entities/movie-schedule.enti
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let user: User;
   let tag: Tag;
   let studio: Studio;
   let movie: Movie;
@@ -52,7 +51,7 @@ describe('AppController (e2e)', () => {
     const movieService = await app.get(MovieService);
     const movieScheduleService = await app.get(MovieScheduleService);
 
-    user = await authService.register({
+    await authService.register({
       name: 'user',
       email: email,
       password: password,
