@@ -8,6 +8,7 @@ import { MovieSchedule } from 'src/modules/movie/entities/movie-schedule.entity'
 import { Studio } from 'src/modules/movie/entities/studio.entity';
 import { Order } from 'src/modules/transaction/entities/order.entity';
 import { OrderItem } from 'src/modules/transaction/entities/order-item.entity';
+import { NowPlayingMovie } from 'src/modules/movie/entities/now-playing-movie.entity';
 
 dotenv.config();
 
@@ -18,7 +19,16 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   username: process.env.MYSQL_USERNAME || 'root',
   password: process.env.MYSQL_PASSWORD || 'root',
   database: process.env.MYSQL_DATABASE || 'app',
-  entities: [User, Movie, Tag, MovieSchedule, Studio, Order, OrderItem],
+  entities: [
+    User,
+    Movie,
+    Tag,
+    MovieSchedule,
+    Studio,
+    Order,
+    OrderItem,
+    NowPlayingMovie,
+  ],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
   synchronize: true,
   logging: false,

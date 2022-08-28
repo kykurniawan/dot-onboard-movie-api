@@ -2,8 +2,8 @@ import * as process from 'process';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
-import { Movie } from 'src/modules/movie/entities/movie.entity';
-import { MovieService } from 'src/modules/movie/services/movie.service';
+import { NowPlayingMovieService } from '../movie/services/now-playing-movie.service';
+import { NowPlayingMovie } from '../movie/entities/now-playing-movie.entity';
 
 interface MovieItem {
   id: number;
@@ -29,23 +29,22 @@ export class CronjobService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly movieService: MovieService,
+    private readonly nowPlayingMovieService: NowPlayingMovieService,
   ) {}
 
-  @Cron('0 10 * * *')
+  @Cron('*/10 * * * *')
   async getCurrentlyPlayingMovie() {
     const movies = await this.getMovieFromApi();
     const convertedMovies = movies.map((item: MovieItem) => {
-      const convertedMovie = new Movie();
+      const convertedMovie = new NowPlayingMovie();
       convertedMovie.title = item.title;
-      convertedMovie.poster = item.poster_path;
       convertedMovie.overview = item.overview;
-      convertedMovie.play_until = new Date(item.release_date);
+      convertedMovie.release_date = new Date(item.release_date);
       return convertedMovie;
     });
 
-    await this.movieService.insertMovie(convertedMovies);
-    this.logger.log('Movie inserted');
+    await this.nowPlayingMovieService.sync(convertedMovies);
+    this.logger.log('Now playing movie sync success');
   }
 
   private async getMovieFromApi(): Promise<Array<MovieItem>> {

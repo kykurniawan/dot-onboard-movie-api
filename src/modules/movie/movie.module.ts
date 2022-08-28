@@ -12,13 +12,24 @@ import { StudioExistsValidator } from './validators/studio-exitst.validator';
 import { UniqueStudioNumberValidator } from './validators/unique-studio-number.validator';
 import { MovieScheduleService } from './services/movie-schedule.service';
 import { ScheduleExistsValidator } from './validators/schedule-exists.validator';
+import { NowPlayingMovie } from './entities/now-playing-movie.entity';
+import { NowPlayingMovieService } from './services/now-playing-movie.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Movie, Tag, MovieSchedule, Studio])],
-  exports: [MovieService, MovieScheduleService],
+  imports: [
+    TypeOrmModule.forFeature([
+      Movie,
+      Tag,
+      MovieSchedule,
+      Studio,
+      NowPlayingMovie,
+    ]),
+  ],
+  exports: [MovieService, MovieScheduleService, NowPlayingMovieService],
   providers: [
     MovieService,
     MovieScheduleService,
+    NowPlayingMovieService,
     TagsExistsValidator,
     MovieExistsValidator,
     StudioExistsValidator,
