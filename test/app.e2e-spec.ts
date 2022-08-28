@@ -8,7 +8,6 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigTest } from '../src/configs/typeorm.config';
-import { User } from '../src/modules/user/entities/user.entity';
 import { AuthService } from '../src/modules/auth/auth.service';
 import { useContainer } from 'class-validator';
 import { Tag } from '../src/modules/movie/entities/tag.entity';
