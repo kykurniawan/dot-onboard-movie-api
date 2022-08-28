@@ -6,7 +6,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { ScheduleExists } from 'src/modules/movie/decorators/schedule-exists.decorator';
+import { ScheduleExists } from '../../movie/decorators/schedule-exists.decorator';
 
 export class OrderItemDto {
   @IsNotEmpty()

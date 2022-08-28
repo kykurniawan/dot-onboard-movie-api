@@ -1,14 +1,14 @@
 import * as dotenv from 'dotenv';
 import * as process from 'process';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Movie } from 'src/modules/movie/entities/movie.entity';
-import { User } from 'src/modules/user/entities/user.entity';
-import { Tag } from 'src/modules/movie/entities/tag.entity';
-import { MovieSchedule } from 'src/modules/movie/entities/movie-schedule.entity';
-import { Studio } from 'src/modules/movie/entities/studio.entity';
-import { Order } from 'src/modules/transaction/entities/order.entity';
-import { OrderItem } from 'src/modules/transaction/entities/order-item.entity';
-import { NowPlayingMovie } from 'src/modules/movie/entities/now-playing-movie.entity';
+import { Movie } from '../modules/movie/entities/movie.entity';
+import { User } from '../modules/user/entities/user.entity';
+import { Tag } from '../modules/movie/entities/tag.entity';
+import { MovieSchedule } from '../modules/movie/entities/movie-schedule.entity';
+import { Studio } from '../modules/movie/entities/studio.entity';
+import { Order } from '../modules/transaction/entities/order.entity';
+import { OrderItem } from '../modules/transaction/entities/order-item.entity';
+import { NowPlayingMovie } from '../modules/movie/entities/now-playing-movie.entity';
 
 dotenv.config();
 

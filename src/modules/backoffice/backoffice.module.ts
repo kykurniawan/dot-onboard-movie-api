@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { MovieModule } from 'src/modules/movie/movie.module';
+import { MovieModule } from '../movie/movie.module';
 import { BackofficeController } from './backoffice.controller';
 
 @Module({

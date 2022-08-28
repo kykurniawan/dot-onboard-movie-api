@@ -6,7 +6,7 @@ import {
   Matches,
   IsNotEmpty,
 } from 'class-validator';
-import { UniqueEmail } from 'src/modules/user/decorators/unique-email.decorator';
+import { UniqueEmail } from '../../user/decorators/unique-email.decorator';
 
 export class RegisterDto {
   @IsNotEmpty()

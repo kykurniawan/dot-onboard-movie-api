@@ -8,8 +8,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { HttpExceptionFilter } from 'src/app.filter';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
+import { HttpExceptionFilter } from '../../app.filter';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { MovieService } from './services/movie.service';
 import { NowPlayingMovieService } from './services/now-playing-movie.service';
 
