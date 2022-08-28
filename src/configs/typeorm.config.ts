@@ -33,3 +33,20 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   synchronize: true,
   logging: false,
 };
+
+export const typeOrmConfigTest: TypeOrmModuleOptions = {
+  type: 'sqlite',
+  database: ':memory:',
+  entities: [
+    User,
+    Movie,
+    Tag,
+    MovieSchedule,
+    Studio,
+    Order,
+    OrderItem,
+    NowPlayingMovie,
+  ],
+  synchronize: true,
+  logging: false,
+};
