@@ -1,11 +1,14 @@
-import { Logger, Injectable, NestMiddleware } from '@nestjs/common';
-
+import { Injectable, NestMiddleware, Inject } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  private logger = new Logger('HTTP');
+  constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   use(req: any, res: any, next: (error?: any) => void) {
-    this.logger.log('Request from ip: ' + req.ip);
+    this.logger.info('Request from ip: ' + req.ip);
     next();
   }
 }

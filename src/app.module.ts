@@ -1,36 +1,48 @@
 import * as dotenv from 'dotenv';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { DatabaseModule } from './database/database.module';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { LoggerMiddleware } from './app.middleware';
 import { WinstonModule } from 'nest-winston';
+import { MovieModule } from './modules/movie/movie.module';
 import * as winston from 'winston';
+import { BackofficeModule } from './modules/backoffice/backoffice.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeOrmConfig } from './configs/typeorm.config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronjobModule } from './modules/cronjob/cronjob.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 dotenv.config();
+
+const winstonFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.align(),
+  winston.format.printf(
+    (info) => `${info.timestamp} ${info.level.toUpperCase()}: ${info.message}`,
+  ),
+);
 
 @Module({
   imports: [
-    DatabaseModule,
-    UserModule,
-    AuthModule,
+    ScheduleModule.forRoot(),
+    TypeOrmModule.forRoot(typeOrmConfig),
     WinstonModule.forRoot({
       transports: [
         new winston.transports.File({
           filename: 'app.log',
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.simple(),
-          ),
+          format: winstonFormat,
         }),
         new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.timestamp(),
-            winston.format.simple(),
-          ),
+          format: winstonFormat,
         }),
       ],
     }),
+    UserModule,
+    AuthModule,
+    MovieModule,
+    BackofficeModule,
+    CronjobModule,
+    TransactionModule,
   ],
 })
 export class AppModule implements NestModule {
