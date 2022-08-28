@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { HttpExceptionFilter } from 'src/app.filter';
+import { HttpExceptionFilter } from '../../app.filter';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JWTUser } from '../auth/strategies/jwt.strategy';
 import { OrderDto } from './dto/order.dto';

@@ -1,4 +1,3 @@
-import { OrderItem } from 'src/modules/transaction/entities/order-item.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { OrderItem } from '../../transaction/entities/order-item.entity';
 import { Movie } from './movie.entity';
 import { Studio } from './studio.entity';
 

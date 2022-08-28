@@ -1,4 +1,3 @@
-import { MovieSchedule } from 'src/modules/movie/entities/movie-schedule.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { MovieSchedule } from '../../movie/entities/movie-schedule.entity';
 import { Order } from './order.entity';
 
 @Entity('order_items')

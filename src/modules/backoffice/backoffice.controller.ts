@@ -19,10 +19,9 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response, Express } from 'express';
-import { HttpExceptionFilter } from 'src/app.filter';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
-import { MovieService } from 'src/modules/movie/services/movie.service';
+import { HttpExceptionFilter } from '../../app.filter';
 import { AdminGuard } from '../auth/guards/admin.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateMovieScheduleDto } from '../movie/dto/create-movie-schedule.dto';
 import { CreateMovieDto } from '../movie/dto/create-movie.dto';
 import { CreateStudioDto } from '../movie/dto/create-studio.dto';
@@ -30,6 +29,7 @@ import { CreateTagDto } from '../movie/dto/create-tag.dto';
 import { UpdateMovieDto } from '../movie/dto/update-movie.dto';
 import { UpdateStudioDto } from '../movie/dto/update-studio.dto';
 import { MovieScheduleService } from '../movie/services/movie-schedule.service';
+import { MovieService } from '../movie/services/movie.service';
 
 @Controller('backoffice')
 @UseGuards(JwtAuthGuard, AdminGuard)

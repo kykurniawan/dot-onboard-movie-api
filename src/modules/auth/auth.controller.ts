@@ -15,8 +15,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, Request, Express } from 'express';
-import { HttpExceptionFilter } from 'src/app.filter';
-import { User } from 'src/modules/user/entities/user.entity';
+import { HttpExceptionFilter } from '../../app.filter';
+import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
