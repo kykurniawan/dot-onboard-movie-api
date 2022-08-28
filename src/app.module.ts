@@ -12,6 +12,7 @@ import { typeOrmConfig } from './configs/typeorm.config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronjobModule } from './modules/cronjob/cronjob.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { AppController } from './app.controller';
 dotenv.config();
 
 const winstonFormat = winston.format.combine(
@@ -44,6 +45,7 @@ const winstonFormat = winston.format.combine(
     CronjobModule,
     TransactionModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
