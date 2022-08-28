@@ -10,12 +10,10 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
-  MaxFileSizeValidator,
-  FileTypeValidator,
-  ParseFilePipe,
   NotFoundException,
   UseFilters,
   BadRequestException,
+  ParseFilePipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response, Express } from 'express';
@@ -45,10 +43,7 @@ export class BackofficeController {
   async createMovie(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 2000000 }),
-          new FileTypeValidator({ fileType: 'jpeg' }),
-        ],
+        fileIsRequired: true,
       }),
     )
     poster: Express.Multer.File,
@@ -73,10 +68,6 @@ export class BackofficeController {
   async updateMovie(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 2000000 }),
-          new FileTypeValidator({ fileType: 'jpeg' }),
-        ],
         fileIsRequired: false,
       }),
     )

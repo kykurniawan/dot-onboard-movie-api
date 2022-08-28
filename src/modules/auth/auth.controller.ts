@@ -8,8 +8,6 @@ import {
   UseInterceptors,
   UploadedFile,
   ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
   UseGuards,
   UseFilters,
 } from '@nestjs/common';
@@ -32,10 +30,7 @@ export class AuthController {
   async register(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 2000000 }),
-          new FileTypeValidator({ fileType: 'jpeg|png' }),
-        ],
+        fileIsRequired: true,
       }),
     )
     avatar: Express.Multer.File,

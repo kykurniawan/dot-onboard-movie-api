@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MulterModule } from '@nestjs/platform-express';
@@ -14,13 +14,29 @@ import { UserModule } from '../user/user.module';
 @Module({
   imports: [
     MulterModule.register({
-      dest: './uploads',
       storage: diskStorage({
         destination: './uploads/avatars',
         filename(req, file, callback) {
           callback(null, Date.now() + extname(file.originalname));
         },
       }),
+      fileFilter(req, file, callback) {
+        if (file.mimetype !== 'image/jpeg') {
+          return callback(
+            new BadRequestException(
+              'Only file with image/jpg mimetype are allowed',
+            ),
+            false,
+          );
+        }
+        if (file.size > 2000000) {
+          return callback(
+            new BadRequestException('Maximum file size is 2MB'),
+            false,
+          );
+        }
+        return callback(null, true);
+      },
     }),
     UserModule,
     PassportModule,
