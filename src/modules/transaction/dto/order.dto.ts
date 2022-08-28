@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { ScheduleExists } from 'src/modules/movie/decorators/schedule-exists.decorator';
 
 export class OrderItemDto {
@@ -20,4 +26,8 @@ export class OrderDto {
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
+
+  @IsNotEmpty()
+  @IsString()
+  payment_method: string;
 }

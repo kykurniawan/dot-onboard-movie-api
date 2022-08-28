@@ -75,7 +75,7 @@ export class TransactionService {
 
     const order = new Order();
     order.orderItems = items;
-    order.payment_method = 'OVO';
+    order.payment_method = orderDto.payment_method;
     order.user = user;
     order.total_item_price = previewResult.total_price;
 
