@@ -5,8 +5,8 @@ import {
   HttpException,
   BadRequestException,
   NotFoundException,
-  InternalServerErrorException,
 } from '@nestjs/common';
+
 import { Request, Response } from 'express';
 
 @Catch(HttpException)

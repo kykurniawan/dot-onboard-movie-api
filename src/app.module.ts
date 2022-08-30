@@ -1,5 +1,10 @@
 import * as dotenv from 'dotenv';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  HttpException,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LoggerMiddleware } from './app.middleware';
@@ -13,6 +18,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronjobModule } from './modules/cronjob/cronjob.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { AppController } from './app.controller';
+import { RavenModule } from 'nest-raven';
+import { RavenInterceptor } from 'nest-raven/dist/raven.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+
 dotenv.config();
 
 const winstonFormat = winston.format.combine(
@@ -44,8 +53,22 @@ const winstonFormat = winston.format.combine(
     BackofficeModule,
     CronjobModule,
     TransactionModule,
+    RavenModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useValue: new RavenInterceptor({
+        filters: [
+          {
+            type: HttpException,
+            filter: (exception: HttpException) => 500 > exception.getStatus(),
+          },
+        ],
+      }),
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
