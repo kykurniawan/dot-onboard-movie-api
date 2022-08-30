@@ -1,0 +1,4 @@
+export const MOVIE_CACHE_KEY = 'MOVIE_CACHE_KEY';
+export const TAG_CACHE_KEY = 'TAG_CACHE_KEY';
+export const STUDIO_CACHE_KEY = 'STUDIO_CACHE_KEY';
+export const SCHEDULE_CACHE_KEY = 'SCHEDULE_CACHE_KEY';

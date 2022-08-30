@@ -32,7 +32,7 @@ export class CronjobService {
     private readonly nowPlayingMovieService: NowPlayingMovieService,
   ) {}
 
-  @Cron('*/10 * * * *')
+  @Cron('* * * * *')
   async getCurrentlyPlayingMovie() {
     const movies = await this.getMovieFromApi();
     const convertedMovies = movies.map((item: MovieItem) => {
