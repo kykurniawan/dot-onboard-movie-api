@@ -21,6 +21,8 @@ import { AppController } from './app.controller';
 import { RavenModule } from 'nest-raven';
 import { RavenInterceptor } from 'nest-raven/dist/raven.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CacheModule } from '@nestjs/common/cache';
+import { cacheConfig } from './configs/cache.config';
 
 dotenv.config();
 
@@ -54,6 +56,7 @@ const winstonFormat = winston.format.combine(
     CronjobModule,
     TransactionModule,
     RavenModule,
+    CacheModule.register(cacheConfig),
   ],
   controllers: [AppController],
   providers: [

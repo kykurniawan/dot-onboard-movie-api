@@ -14,10 +14,13 @@ import {
   UseFilters,
   BadRequestException,
   ParseFilePipe,
+  CACHE_MANAGER,
+  Inject,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response, Express } from 'express';
 import { HttpExceptionFilter } from '../../app.filter';
+import { HttpCacheInterceptor } from '../../app.interceptor';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateMovieScheduleDto } from '../movie/dto/create-movie-schedule.dto';
@@ -28,14 +31,25 @@ import { UpdateMovieDto } from '../movie/dto/update-movie.dto';
 import { UpdateStudioDto } from '../movie/dto/update-studio.dto';
 import { MovieScheduleService } from '../movie/services/movie-schedule.service';
 import { MovieService } from '../movie/services/movie.service';
+import { CacheKey } from '@nestjs/common/cache';
+import {
+  MOVIE_CACHE_KEY,
+  SCHEDULE_CACHE_KEY,
+  STUDIO_CACHE_KEY,
+  TAG_CACHE_KEY,
+} from '../../app.constant';
+import { Cache } from 'cache-manager';
+import { clearCache } from '../../app.util';
 
 @Controller('backoffice')
 @UseGuards(JwtAuthGuard, AdminGuard)
 @UseFilters(new HttpExceptionFilter())
+@UseInterceptors(HttpCacheInterceptor)
 export class BackofficeController {
   constructor(
     private readonly movieService: MovieService,
     private readonly movieScheduleService: MovieScheduleService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @Post('movies')
@@ -53,6 +67,8 @@ export class BackofficeController {
   ) {
     createMovieDto.poster = poster.filename;
     const newMovie = await this.movieService.createMovie(createMovieDto);
+
+    await clearCache(MOVIE_CACHE_KEY, this.cacheManager);
 
     return res.status(201).json({
       success: true,
@@ -89,6 +105,8 @@ export class BackofficeController {
       updateMovieDto,
     );
 
+    await clearCache(MOVIE_CACHE_KEY, this.cacheManager);
+
     return res.status(200).json({
       success: true,
       message: 'movie updated',
@@ -99,19 +117,22 @@ export class BackofficeController {
   }
 
   @Get('movies')
-  async movieList(@Req() req: Request, @Res() res: Response) {
+  @CacheKey(MOVIE_CACHE_KEY)
+  async movieList(@Req() req: Request) {
     const queryParams = req.query;
     const results = await this.movieService.findAllMovie(queryParams);
-    return res.json({
+    return {
       success: true,
       message: 'ok',
       data: results,
-    });
+    };
   }
 
   @Post('tags')
   async createTag(@Body() createTagDto: CreateTagDto, @Res() res: Response) {
     const newTag = await this.movieService.createTag(createTagDto.name);
+
+    await clearCache(TAG_CACHE_KEY, this.cacheManager);
 
     return res.status(201).json({
       success: true,
@@ -123,14 +144,15 @@ export class BackofficeController {
   }
 
   @Get('tags')
-  async tagList(@Req() req: Request, @Res() res: Response) {
+  @CacheKey(TAG_CACHE_KEY)
+  async tagList(@Req() req: Request) {
     const results = await this.movieService.findAllTag(req.query);
 
-    return res.status(200).json({
+    return {
       success: true,
       message: 'ok',
       data: results,
-    });
+    };
   }
 
   @Post('studios')
@@ -142,6 +164,8 @@ export class BackofficeController {
       createStudioDto.studio_number,
       createStudioDto.seat_capacity,
     );
+
+    await clearCache(STUDIO_CACHE_KEY, this.cacheManager);
 
     return res.status(201).json({
       success: true,
@@ -176,6 +200,8 @@ export class BackofficeController {
 
     await this.movieScheduleService.updateStudio(Number(id), updateStudioDto);
 
+    await clearCache(STUDIO_CACHE_KEY, this.cacheManager);
+
     return res.status(200).json({
       success: true,
       message: 'studio updated',
@@ -186,20 +212,22 @@ export class BackofficeController {
   }
 
   @Get('studios')
-  async studioList(@Res() res: Response) {
+  @CacheKey(STUDIO_CACHE_KEY)
+  async studioList() {
     const studios = await this.movieScheduleService.findAllStudio();
 
-    return res.status(200).json({
+    return {
       success: true,
       message: 'ok',
       data: {
         items: studios,
       },
-    });
+    };
   }
 
   @Get('studios/:id')
-  async studioDetail(@Req() req: Request, @Res() res: Response) {
+  @CacheKey(STUDIO_CACHE_KEY)
+  async studioDetail(@Req() req: Request) {
     const studio = await this.movieScheduleService.findOneStudio(
       Number(req.params.id),
     );
@@ -208,13 +236,13 @@ export class BackofficeController {
       throw new NotFoundException();
     }
 
-    return res.status(200).json({
+    return {
       success: true,
       message: 'ok',
       data: {
         item: studio,
       },
-    });
+    };
   }
 
   @Post('schedules')
@@ -226,6 +254,8 @@ export class BackofficeController {
       movieScheduleDto,
     );
 
+    await clearCache(SCHEDULE_CACHE_KEY, this.cacheManager);
+
     return res.status(201).json({
       success: true,
       message: 'schedule created',
@@ -236,13 +266,14 @@ export class BackofficeController {
   }
 
   @Get('schedules')
-  async movieScheduleList(@Req() req: Request, @Res() res: Response) {
+  @CacheKey(SCHEDULE_CACHE_KEY)
+  async movieScheduleList(@Req() req: Request) {
     const results = await this.movieScheduleService.findAllSchedule(req.query);
 
-    return res.status(200).json({
+    return {
       success: true,
       message: 'ok',
       data: results,
-    });
+    };
   }
 }
