@@ -27,7 +27,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     if (exception.name == NotFoundException.name) {
-      throw new InternalServerErrorException();
       return response.status(status).json({
         success: false,
         message: exception.message,

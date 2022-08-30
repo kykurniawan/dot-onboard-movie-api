@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { URLSearchParams } from 'url';
 import { CreateMovieDto } from '../dto/create-movie.dto';
 import { UpdateMovieDto } from '../dto/update-movie.dto';
@@ -11,8 +11,10 @@ import { PaginateResult } from '../interfaces/paginate-result.interface';
 @Injectable()
 export class MovieService {
   constructor(
-    @InjectRepository(Movie) private movieRepository: Repository<Movie>,
-    @InjectRepository(Tag) private tagRepository: Repository<Tag>,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
+    @InjectRepository(Movie)
+    private readonly movieRepository: Repository<Movie>,
+    @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>,
   ) {}
 
   async insertMovie(movies: Movie[]) {
@@ -44,22 +46,26 @@ export class MovieService {
     updateMovieDto: UpdateMovieDto,
   ): Promise<Movie> {
     const { tags, ...movieField } = updateMovieDto;
-    const movie = await this.movieRepository.findOneBy({ id: movieId });
-    const updatedMovie = await this.movieRepository.save({
-      ...movie,
-      ...movieField,
-    });
-    if (tags) {
-      const tagItems: Tag[] = [];
+    let movie = await this.movieRepository.findOneBy({ id: movieId });
+    await this.entityManager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        movie = await transactionalEntityManager.save({
+          ...movie,
+          ...movieField,
+        });
+        if (tags) {
+          const tagItems: Tag[] = [];
 
-      for (let index = 0; index < tags.length; index++) {
-        const tag = await this.findTagById(tags[index]);
-        tagItems.push(tag);
-      }
-      updatedMovie.tags = tagItems;
-      await this.movieRepository.save(updatedMovie);
-    }
-    return updatedMovie;
+          for (let index = 0; index < tags.length; index++) {
+            const tag = await this.findTagById(tags[index]);
+            tagItems.push(tag);
+          }
+          movie.tags = tagItems;
+          await transactionalEntityManager.save(movie);
+        }
+      },
+    );
+    return movie;
   }
 
   async findAllMovie(query?: any): Promise<PaginateResult> {

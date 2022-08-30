@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 import { MovieScheduleService } from '../movie/services/movie-schedule.service';
 import { UserService } from '../user/user.service';
 import { OrderDto } from './dto/order.dto';
@@ -10,10 +10,8 @@ import { Order } from './entities/order.entity';
 @Injectable()
 export class TransactionService {
   constructor(
-    @InjectRepository(Order)
-    private readonly orderRepository: Repository<Order>,
-    @InjectRepository(OrderItem)
-    private readonly orderItemRepository: Repository<OrderItem>,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
     private readonly movieScheduleService: MovieScheduleService,
     private readonly userService: UserService,
   ) {}
@@ -56,29 +54,38 @@ export class TransactionService {
     const previewResult = await this.preview(orderDto);
 
     const items = [];
-    for (let index = 0; index < previewResult.item_details.length; index++) {
-      const item = previewResult.item_details[index];
-      const schedule = await this.movieScheduleService.findOneScheduleById(
-        item.schedule_id,
-      );
-
-      const orderItem = new OrderItem();
-      orderItem.movie_schedule = schedule;
-      orderItem.quantity = item.qty;
-      orderItem.price = item.price;
-      orderItem.sub_total_price = item.sub_total_price;
-      const newOrderItem = await this.orderItemRepository.save(orderItem);
-      items.push(newOrderItem);
-    }
-
-    const user = await this.userService.findOneId(userId);
-
     const order = new Order();
-    order.orderItems = items;
-    order.payment_method = orderDto.payment_method;
-    order.user = user;
-    order.total_item_price = previewResult.total_price;
 
-    return await this.orderRepository.save(order);
+    await this.entityManager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        for (
+          let index = 0;
+          index < previewResult.item_details.length;
+          index++
+        ) {
+          const item = previewResult.item_details[index];
+          const schedule = await this.movieScheduleService.findOneScheduleById(
+            item.schedule_id,
+          );
+          const orderItem = new OrderItem();
+          orderItem.movie_schedule = schedule;
+          orderItem.quantity = item.qty;
+          orderItem.price = item.price;
+          orderItem.sub_total_price = item.sub_total_price;
+          const newOrderItem = await transactionalEntityManager.save(orderItem);
+          items.push(newOrderItem);
+        }
+
+        const user = await this.userService.findOneId(userId);
+
+        order.orderItems = items;
+        order.payment_method = orderDto.payment_method;
+        order.user = user;
+        order.total_item_price = previewResult.total_price;
+        await transactionalEntityManager.save(order);
+      },
+    );
+
+    return order;
   }
 }

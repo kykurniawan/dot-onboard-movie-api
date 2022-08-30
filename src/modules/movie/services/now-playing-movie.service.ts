@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { NowPlayingMovie } from '../entities/now-playing-movie.entity';
 
 @Injectable()
 export class NowPlayingMovieService {
   constructor(
+    @InjectEntityManager() private readonly entityManager: EntityManager,
     @InjectRepository(NowPlayingMovie)
     private readonly nowPlayingMovieRepository: Repository<NowPlayingMovie>,
   ) {}
@@ -17,7 +18,14 @@ export class NowPlayingMovieService {
   async sync(
     nowPlayingMovies: Array<NowPlayingMovie>,
   ): Promise<Array<NowPlayingMovie>> {
-    await this.nowPlayingMovieRepository.delete({});
-    return await this.nowPlayingMovieRepository.save(nowPlayingMovies);
+    let results = [];
+    await this.entityManager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        await transactionalEntityManager.delete(NowPlayingMovie, {});
+        results = await transactionalEntityManager.save(nowPlayingMovies);
+      },
+    );
+
+    return results;
   }
 }
